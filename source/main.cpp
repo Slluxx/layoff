@@ -122,7 +122,7 @@ extern "C" {
     }
 }
 
-u64 kHeld, kDown;
+
 
 Result capsscCaptureForDebug(void *buffer, size_t buffer_size, u64 *size) {
 	Service capssc;
@@ -158,37 +158,52 @@ void overlayScreenshot() {
 	fwrite(buf, size, 1, f);
 	fclose(f);
 }
+
+u64 kDown;
+PadState pad;
+s32 prev_touchcount=0;
 static inline void ImguiBindInputs()
 {	
 	ImGuiIO &io = ImGui::GetIO();
 	
-	hidScanInput();
-	kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
-	kDown = hidKeysDown(CONTROLLER_P1_AUTO);
-	
-	u32 touch_count = hidTouchCount();
-	if (touch_count == 1)
-	{
-		touchPosition touch;
-		hidTouchRead(&touch, 0);
-		io.MousePos = ImVec2(touch.px, touch.py);
-		io.MouseDown[0] = true;
-	}       
-	else io.MouseDown[0] = false;
-	
-	io.NavInputs[ImGuiNavInput_DpadDown] = kHeld & KEY_DOWN;
-	io.NavInputs[ImGuiNavInput_DpadUp] = kHeld & KEY_UP;
-	io.NavInputs[ImGuiNavInput_DpadLeft] = kHeld & KEY_LEFT;
-	io.NavInputs[ImGuiNavInput_DpadRight] = kHeld & KEY_RIGHT;
+	padUpdate(&pad);
+	kDown = padGetButtonsDown(&pad);
 
-	io.NavInputs[ImGuiNavInput_Activate] = kHeld & KEY_A;
-	io.NavInputs[ImGuiNavInput_Cancel] = kHeld & KEY_B;
-	io.NavInputs[ImGuiNavInput_Menu] = kHeld & KEY_X;
-	if (kDown & KEY_L && kDown & KEY_R) {
+	HidTouchScreenState state={0};
+	if (hidGetTouchScreenStates(&state, 1)) {
+		if (state.count != prev_touchcount)
+		{
+			prev_touchcount = state.count;
+		}
+
+/* 		for(s32 i=0; i<state.count; i++)
+		{
+			// Print the touch screen coordinates
+			printf("[%d] x=%03d, y=%03d, diameter_x=%03d, diameter_y=%03d, rotation_angle=%03d\n", i, state.touches[i].x, state.touches[i].y, state.touches[i].diameter_x, state.touches[i].diameter_y, state.touches[i].rotation_angle);
+		} */
+		if (state.count == 1)
+		{
+			io.MousePos = ImVec2(state.touches[1].x, state.touches[1].y);
+			io.MouseDown[0] = true;
+		}       
+		else io.MouseDown[0] = false;
+	}
+
+
+	
+	io.NavInputs[ImGuiNavInput_DpadDown] = kDown & HidNpadButton_Down;
+	io.NavInputs[ImGuiNavInput_DpadUp] = kDown & HidNpadButton_Up;
+	io.NavInputs[ImGuiNavInput_DpadLeft] = kDown & HidNpadButton_Left;
+	io.NavInputs[ImGuiNavInput_DpadRight] = kDown & HidNpadButton_Right;
+
+	io.NavInputs[ImGuiNavInput_Activate] = kDown & HidNpadButton_A;
+	io.NavInputs[ImGuiNavInput_Cancel] = kDown & HidNpadButton_B;
+	io.NavInputs[ImGuiNavInput_Menu] = kDown & HidNpadButton_X;
+	if (kDown & HidNpadButton_L && kDown & HidNpadButton_R) {
 		overlayScreenshot();
 	}else {
-		io.NavInputs[ImGuiNavInput_FocusNext] = kHeld & (KEY_ZR | KEY_R);
-		io.NavInputs[ImGuiNavInput_FocusPrev] = kHeld & (KEY_ZL | KEY_L);
+		io.NavInputs[ImGuiNavInput_FocusNext] = kDown & (HidNpadButton_ZR | HidNpadButton_R);
+		io.NavInputs[ImGuiNavInput_FocusPrev] = kDown & (HidNpadButton_ZL | HidNpadButton_L);
 	}
 }
 
@@ -448,6 +463,10 @@ int main(int argc, char* argv[]) {
 	threadCreate(&nThread, NotifThread, NULL, NULL, 0x2000, 0x2D, -2);
 	threadStart(&nThread);
 	srand(time(NULL));
+
+	padConfigureInput(1, HidNpadStyleSet_NpadStandard);
+    padInitializeDefault(&pad);
+	hidInitializeTouchScreen();
 
     while (true)
 	{		
