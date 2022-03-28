@@ -15,3 +15,4 @@ Layoff.vcxproj.user
 *.log
 *.user
 *.lnk
+romfs/*
