@@ -2,7 +2,7 @@
 #include <switch.h>
 
 void UIInit(NWindow *win) {
-	Result rc = plInitialize();
+	Result rc = plInitialize(PlServiceType::PlServiceType_System);
 	if (R_FAILED(rc))
 		fatalThrow(rc);
 
