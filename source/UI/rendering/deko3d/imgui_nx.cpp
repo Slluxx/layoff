@@ -1140,7 +1140,7 @@ void handleAppletHook (AppletHookType const hook_, void *const param_)
 	{
 	case AppletHookType_OnFocusState:
 		// grab focus state
-		s_focused = (appletGetFocusState () == AppletFocusState_Focused);
+		s_focused = (appletGetFocusState () == AppletFocusState_InFocus);
 		break;
 
 	case AppletHookType_OnOperationMode:
@@ -1153,7 +1153,7 @@ void handleAppletHook (AppletHookType const hook_, void *const param_)
 			s_height = 720.0f;
 			break;
 
-		case AppletOperationMode_Docked:
+		case AppletOperationMode_Console:
 			// use docked mode resolution (1080p)
 			s_width  = 1920.0f;
 			s_height = 1080.0f;
@@ -1212,7 +1212,7 @@ void moveMouse (ImGuiIO &io_, ImVec2 const &pos_, bool const force_ = false)
 
 /// \brief Update mouse buttons
 /// \param io_ ImGui IO
-void updateMouseButtons (ImGuiIO &io_)
+/* void updateMouseButtons (ImGuiIO &io_)
 {
 	// read mouse buttons
 	auto const buttons = hidMouseButtonsHeld ();
@@ -1224,8 +1224,11 @@ void updateMouseButtons (ImGuiIO &io_)
 		// force mouse cursor to show on click
 		/*if (io_.MouseDown[i])
 			moveMouse (io_, s_mousePos, true);*/
+
+			/*
 	}
-}
+} 
+*/
 
 /// \brief Update mouse position
 /// \param io_ ImGui IO
@@ -1245,19 +1248,18 @@ void updateMouseButtons (ImGuiIO &io_)
 /// \param io_ ImGui IO
 void updateTouch (ImGuiIO &io_)
 {
-	// read touch positions
-	auto const touchCount = hidTouchCount ();
-	if (touchCount < 1)
-		return;
-
-	// use first touch position
-	touchPosition pos;
-	hidTouchRead (&pos, 0);
-
-	// set mouse position to touch point; force hide mouse cursor
-	moveMouse (io_, ImVec2 (pos.px, pos.py));
-	io_.MouseDown[0] = true;
-	//s_showMouse      = false;
+	HidTouchScreenState state={0};
+        if (hidGetTouchScreenStates(&state, 1)) {
+/*             if (state.count != prev_touchcount)
+            {
+                prev_touchcount = state.count;
+            } */
+			if (state.count < 1) return;
+			// set mouse position to touch point; force hide mouse cursor
+			moveMouse (io_, ImVec2 (state.touches[1].x, state.touches[1].y));
+			io_.MouseDown[0] = true;
+			//s_showMouse      = false;
+        }
 }
 
 /// \brief Update gamepad inputs
@@ -1384,28 +1386,28 @@ bool imgui::nx::init ()
 	io.BackendPlatformName = "Switch";
 
 	// keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
-	io.KeyMap[ImGuiKey_Tab]         = KBD_TAB;
-	io.KeyMap[ImGuiKey_LeftArrow]   = KBD_LEFT;
-	io.KeyMap[ImGuiKey_RightArrow]  = KBD_RIGHT;
-	io.KeyMap[ImGuiKey_UpArrow]     = KBD_UP;
-	io.KeyMap[ImGuiKey_DownArrow]   = KBD_DOWN;
-	io.KeyMap[ImGuiKey_PageUp]      = KBD_PAGEUP;
-	io.KeyMap[ImGuiKey_PageDown]    = KBD_PAGEDOWN;
-	io.KeyMap[ImGuiKey_Home]        = KBD_HOME;
-	io.KeyMap[ImGuiKey_End]         = KBD_END;
-	io.KeyMap[ImGuiKey_Insert]      = KBD_INSERT;
-	io.KeyMap[ImGuiKey_Delete]      = KBD_DELETE;
-	io.KeyMap[ImGuiKey_Backspace]   = KBD_BACKSPACE;
-	io.KeyMap[ImGuiKey_Space]       = KBD_SPACE;
-	io.KeyMap[ImGuiKey_Enter]       = KBD_ENTER;
-	io.KeyMap[ImGuiKey_Escape]      = KBD_ESC;
-	io.KeyMap[ImGuiKey_KeyPadEnter] = KBD_KPENTER;
-	io.KeyMap[ImGuiKey_A]           = KBD_A;
-	io.KeyMap[ImGuiKey_C]           = KBD_C;
-	io.KeyMap[ImGuiKey_V]           = KBD_V;
-	io.KeyMap[ImGuiKey_X]           = KBD_X;
-	io.KeyMap[ImGuiKey_Y]           = KBD_Y;
-	io.KeyMap[ImGuiKey_Z]           = KBD_Z;
+	io.KeyMap[ImGuiKey_Tab]         = HidKeyboardKey_Tab ;
+	io.KeyMap[ImGuiKey_LeftArrow]   = HidKeyboardKey_LeftArrow ;
+	io.KeyMap[ImGuiKey_RightArrow]  = HidKeyboardKey_RightArrow ;
+	io.KeyMap[ImGuiKey_UpArrow]     = HidKeyboardKey_UpArrow ;
+	io.KeyMap[ImGuiKey_DownArrow]   = HidKeyboardKey_DownArrow ;
+	io.KeyMap[ImGuiKey_PageUp]      = HidKeyboardKey_PageUp ;
+	io.KeyMap[ImGuiKey_PageDown]    = HidKeyboardKey_PageDown ;
+	io.KeyMap[ImGuiKey_Home]        = HidKeyboardKey_Home ;
+	io.KeyMap[ImGuiKey_End]         = HidKeyboardKey_End ;
+	io.KeyMap[ImGuiKey_Insert]      = HidKeyboardKey_Insert ;
+	io.KeyMap[ImGuiKey_Delete]      = HidKeyboardKey_Delete ;
+	io.KeyMap[ImGuiKey_Backspace]   = HidKeyboardKey_Backspace ;
+	io.KeyMap[ImGuiKey_Space]       = HidKeyboardKey_Space ;
+	io.KeyMap[ImGuiKey_Enter]       = HidKeyboardKey_Return ;
+	io.KeyMap[ImGuiKey_Escape]      = HidKeyboardKey_Escape ;
+	io.KeyMap[ImGuiKey_KeyPadEnter] = HidKeyboardKey_NumPadEnter ;
+	io.KeyMap[ImGuiKey_A]           = HidKeyboardKey_A;
+	io.KeyMap[ImGuiKey_C]           = HidKeyboardKey_C;
+	io.KeyMap[ImGuiKey_V]           = HidKeyboardKey_V ;
+	io.KeyMap[ImGuiKey_X]           = HidKeyboardKey_X ;
+	io.KeyMap[ImGuiKey_Y]           = HidKeyboardKey_Y ;
+	io.KeyMap[ImGuiKey_Z]           = HidKeyboardKey_Z ;
 
 	// initially disable mouse cursor
 	io.MouseDrawCursor = false;
