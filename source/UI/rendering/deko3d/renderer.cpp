@@ -184,7 +184,7 @@ void deko3dInit (NWindow *in_win)
 	wind = in_win;
 
 	// create deko3d device
-	s_device = dk::DeviceMaker{}.setCbError(DKError).create ();
+	s_device = dk::DeviceMaker{}.create ();
 
 	// initialize swapchain with maximum resolution
 	rebuildSwapchain (1280, 720);
