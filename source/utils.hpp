@@ -7,7 +7,7 @@
 
 extern u64 kDown;
 extern u64 kHeld;
-static inline bool BackPressed() { return kDown & KEY_B; }
+static inline bool BackPressed() { return kDown & HidNpadButton_B; }
 
 namespace layoff {
 
