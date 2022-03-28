@@ -1,7 +1,7 @@
 #pragma once
 
 #include <deko3d.hpp>
-
+#include <cstdint>
 namespace imgui
 {
 namespace deko3d
