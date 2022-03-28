@@ -96,7 +96,7 @@ inline void Sidebar::DoUpdate()
 	}
 	ImGui::SameLine();
 	
-	ImGui::TextRight("%d%%%s", console::Status.BatteryLevel, console::Status.chargerType == ChargerType_None ? "" : "+");
+	ImGui::TextRight("%d%%%s", console::Status.BatteryLevel, console::Status.chargerType == PsmChargerType_Unconnected ? "" : "+");
 	ImGui::Spacing();
 
 	ImGui::BeginChild("WidgetsArea", { W - 5, H * 3 / 4 });
