@@ -52,7 +52,7 @@ INCLUDES	:=	include
 ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
-			$(ARCH) $(DEFINES)
+			$(ARCH) $(DEFINES) 
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -DLIBNX_NO_DEPRECATION -DLAYOFF_LOGGING -DATMOSPHERE_IS_STRATOSPHERE -DATMOSPHERE_BOARD_NINTENDO_NX -DATMOSPHERE_ARCH_ARM64
 
@@ -60,14 +60,16 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -Wdeprecated-declarations -std=c
 
 ASFLAGS	:=	-g $(ARCH)
 
-LIBS	:= -lstratosphere -lnx
+LIBS	:= -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/../../libs/Atmosphere-libs/libstratosphere
-
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) 
+LIBDIRS += $(CURDIR)/../libs/Atmosphere-libs/libstratosphere 
+LIBDIRS += $(CURDIR)/../libs/Atmosphere-libs/libvapours
+LIBDIRS += $(CURDIR)/../libs/liblayoff
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
