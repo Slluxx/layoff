@@ -36,14 +36,14 @@ namespace services {
 		ams::Result AcquireUiEvent(sf::OutCopyHandle evt);
 		ams::Result GetLastUiEvent(sf::Out<LayoffUIEvent> evt);
 
-		DEFINE_SERVICE_DISPATCH_TABLE{
+		/* ams::sf::cmif::ServiceDispatchTable{
 			MAKE_SERVICE_COMMAND_META(NotifySimple),
 			MAKE_SERVICE_COMMAND_META(NotifyEx),
 			MAKE_SERVICE_COMMAND_META(SetClientName),
 			MAKE_SERVICE_COMMAND_META(PushUIPanel),
 			MAKE_SERVICE_COMMAND_META(AcquireUiEvent),
 			MAKE_SERVICE_COMMAND_META(GetLastUiEvent),
-		};
+		}; */
 	};
 
 }

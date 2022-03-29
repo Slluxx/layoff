@@ -114,10 +114,10 @@ namespace services
 		return ams::ResultSuccess();
 	}
 
-	ams::Result OverlayService::AcquireNewDataEvent(sf::OutCopyHandle evt) {
+	/* ams::Result OverlayService::AcquireNewDataEvent(sf::OutCopyHandle evt) {
 		*evt = newData.revent;
 		return ams::ResultSuccess();
-	}
+	} */
 
 	ams::Result OverlayService::PushUIStateChange(IPCUIEvent evt)
 	{

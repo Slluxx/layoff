@@ -43,7 +43,7 @@ TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
-INCLUDES	:=	include ../libs/Atmosphere-libs/config/ include ../libs/Atmosphere-libs/libvapours/include ../libs/Atmosphere-libs/libstratosphere/include ../libs/liblayoff/include
+INCLUDES	:=	include
 #ROMFS	:=	romfs
 
 #---------------------------------------------------------------------------------
@@ -56,10 +56,9 @@ CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -DLIBNX_NO_DEPRECATION -DLAYOFF_LOGGING -DATMOSPHERE_IS_STRATOSPHERE -DATMOSPHERE_BOARD_NINTENDO_NX -DATMOSPHERE_ARCH_ARM64
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -Wdeprecated-declarations -std=c++17
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -Wdeprecated-declarations -std=c++20
 
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS	:= -lstratosphere -lnx
 
@@ -67,7 +66,7 @@ LIBS	:= -lstratosphere -lnx
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/../libs/Atmosphere-libs/libstratosphere
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/../../libs/Atmosphere-libs/libstratosphere
 
 
 #---------------------------------------------------------------------------------
