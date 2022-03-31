@@ -43,7 +43,7 @@ TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
-INCLUDES	:=	include
+INCLUDES	:=	include /../libs/Atmosphere-libs/config/ include /../libs/Atmosphere-libs/libvapours/include /../libs/Atmosphere-libs/libstratosphere/include /../libs/liblayoff/include
 #ROMFS	:=	romfs
 
 #---------------------------------------------------------------------------------
@@ -52,24 +52,22 @@ INCLUDES	:=	include
 ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
-			$(ARCH) $(DEFINES) 
+			$(ARCH) $(DEFINES)
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -DLIBNX_NO_DEPRECATION -DLAYOFF_LOGGING -DATMOSPHERE_IS_STRATOSPHERE -DATMOSPHERE_BOARD_NINTENDO_NX -DATMOSPHERE_ARCH_ARM64
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -Wdeprecated-declarations -std=c++20
 
 ASFLAGS	:=	-g $(ARCH)
+LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lnx
+LIBS	:= -lstratosphere -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) 
-LIBDIRS += $(CURDIR)/../libs/Atmosphere-libs/libstratosphere 
-LIBDIRS += $(CURDIR)/../libs/Atmosphere-libs/libvapours
-LIBDIRS += $(CURDIR)/../libs/liblayoff
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/../libs/Atmosphere-libs/libstratosphere
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -114,7 +112,8 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 			-I$(CURDIR)/$(BUILD)
 
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) 
+export LIBPATHS	+= -L$(CURDIR)/../libs/Atmosphere-libs/libstratosphere/${ATMOSPHERE_LIBRARY_DIR}
 
 ifeq ($(strip $(CONFIG_JSON)),)
 	jsons := $(wildcard *.json)
