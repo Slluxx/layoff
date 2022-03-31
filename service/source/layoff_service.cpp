@@ -69,7 +69,7 @@ namespace services {
 		return ams::ResultSuccess();
 	}
 
-	ams::Result LayoffService::AcquireUiEvent(sf::OutCopyHandle out_evt) {
+	/* ams::Result LayoffService::AcquireUiEvent(sf::OutCopyHandle out_evt) {
 		if (!eventActive(&UiEvent))
 		{
 			ams::Result rc = eventCreate(&UiEvent, true);
@@ -79,7 +79,7 @@ namespace services {
 
 		*out_evt = UiEvent.revent;
 		return ams::ResultSuccess();
-	}
+	} */
 
 	ams::Result LayoffService::GetLastUiEvent(sf::Out<LayoffUIEvent> evt)
 	{

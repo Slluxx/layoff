@@ -65,7 +65,7 @@ namespace services {
 	//Writing
 		ams::Result PushUIStateChange(IPCUIEvent evt);
 
-		DEFINE_SERVICE_DISPATCH_TABLE{
+		/* DEFINE_SERVICE_DISPATCH_TABLE{
 			MAKE_SERVICE_COMMAND_META(LockEvents),
 			MAKE_SERVICE_COMMAND_META(UnlockEvents),
 			MAKE_SERVICE_COMMAND_META(GetQueueStatus),
@@ -75,7 +75,7 @@ namespace services {
 			MAKE_SERVICE_COMMAND_META(ReadNotifQueue),
 			MAKE_SERVICE_COMMAND_META(AcquireNewDataEvent),
 			MAKE_SERVICE_COMMAND_META(PushUIStateChange)
-		};
+		}; */
 	};
 
 }

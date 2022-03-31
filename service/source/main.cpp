@@ -45,7 +45,7 @@ void __libnx_initheap(void) {
 }
 
 void __appInit(void) {
-	hos::SetVersionForLibnx();
+
 }
 
 void __appExit(void) {
@@ -70,11 +70,11 @@ namespace {
 
 int main(int argc, char** argv)
 {
-	ams::Result rc = g_server_manager.RegisterServer<services::OverlayService>(OverlayServiceName, OverlayMaxSessions);
+	ams::Result rc = g_server_manager.RegisterServer(0, OverlayServiceName, OverlayMaxSessions);
 	if (rc.IsFailure())
 		fatalThrow(rc.GetValue());
 	
-	rc = g_server_manager.RegisterServer<services::LayoffService>(LayoffServiceName, LayoffMaxSessions);
+	rc = g_server_manager.RegisterServer(0, LayoffServiceName, LayoffMaxSessions);
 	if (rc.IsFailure())
 		fatalThrow(rc.GetValue());
 
